@@ -1,3 +1,5 @@
+import math
+import random
 import struct
 import time
 from millis import Millis
@@ -41,7 +43,14 @@ class Sensor:
 
 if __name__ == "__main__":
     sensor = Sensor(99)
+    sim_time = 0.0
+    omega = 0.2
+    step_time = 0.4
+    error = 0.05
     while True:
-        print("Main thread is running...")
-        sensor.send_value(Command.POSITION_READING.value, [1.0, 2.0, 3.0])
-        time.sleep(1)
+        x = -0.3 + 0.3 * math.cos(omega*sim_time) + random.uniform(-error, error)
+        y = 0.3 * math.sin(omega*sim_time) + random.uniform(-error, error)
+        print(f"x: {x}, y: {y}")
+        sensor.send_value(Command.POSITION_READING.value, [x, y, 0.0])
+        sim_time += step_time
+        time.sleep(step_time)
