@@ -43,13 +43,24 @@ class Sensor:
 
 if __name__ == "__main__":
     sensor = Sensor(99)
+    x0 = -0.3
+    y0 = 0.0
+    r = 0.25
     sim_time = 0.0
-    omega = 0.2
+    omega = 0.5
     step_time = 0.4
     error = 0.05
+    error_rate = 0.005
+    x_error = 0.0
+    y_error = 0.0
+
     while True:
-        x = -0.3 + 0.3 * math.cos(omega*sim_time) + random.uniform(-error, error)
-        y = 0.3 * math.sin(omega*sim_time) + random.uniform(-error, error)
+        x_error += random.uniform(-error_rate, error_rate)
+        y_error += random.uniform(-error_rate, error_rate)
+        x_error = min(max(x_error, -error), error)
+        y_error = min(max(y_error, -error), error)
+        x = x0 + r * math.cos(omega*sim_time) + x_error
+        y = y0 + r * math.sin(omega*sim_time) + y_error
         print(f"x: {x}, y: {y}")
         sensor.send_value(Command.POSITION_READING.value, [x, y, 0.0])
         sim_time += step_time
